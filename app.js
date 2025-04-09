@@ -5,8 +5,10 @@ const Listing = require("./models/listing.js");
 const path = require("path");
 const methodOverride = require("method-override");
 const engine = require("ejs-mate")
+const wrapAsync = require("./utils/wrapAsync.js");
 
-app.use(express.json());
+app.use(express.static("public"));
+
 const MONGO_URL = "mongodb://127.0.0.1:27017/airbnbweb";
 
 
@@ -25,7 +27,8 @@ async function main() {
 
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
-app.use(express.urlencoded({extended: true}));
+app.use(express.urlencoded({ extended: true }));
+
 app.use(methodOverride("_method"));
 app.engine('ejs', engine);
 app.use(express.static(path.join(__dirname, "/public")));
@@ -52,12 +55,16 @@ app.get("/listings/:id" , async (req,res) =>{
    res.render("listings/show.ejs" , {listing});
 });
  //Create Route
-app.post("/listings", async (req, res) =>{
-    const newListing = new Listing(req.body.listings);
-   await  newListing.save();
-   res.redirect("/listings");
+ app.post("/listings" , wrapAsync(async(req, res, next) =>{
+    const newListing = new Listing(req.body);
+  await newListing.save();
+    res.redirect("/listings");
+ })
 
-});
+);
+  
+  
+
  //Edit Route 
  app.get('/listings/:id/edit', async (req, res) => {
     const listing = await Listing.findById(req.params.id);
