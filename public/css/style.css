@@ -67,12 +67,15 @@ body{
 
 
 .f-info {
-    height: 8rem;
-    background-color: #ebebeb;
+    /* height: 8rem; */
+
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
     align-items:  space-evenly;
+}
+.bg-footer{
+    background-color:#ebebeb; 
 }
 /* cards */
 
