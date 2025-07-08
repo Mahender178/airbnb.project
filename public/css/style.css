@@ -79,7 +79,7 @@ body{
 }
 /* cards */
 
-.card{
+.listing-card{
     border: none !important;
     margin-bottom: 2rem;
 }
@@ -136,3 +136,11 @@ body{
   padding-left: 0;
   padding-right: 0;
 }
+/* Here i am including the map style in css */
+#map {
+    height: 400px;
+    width: 80vh;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  }

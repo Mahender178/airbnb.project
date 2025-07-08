@@ -1,31 +1,53 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
+const Review = require("./reviews.js");
 
 const listingSchema = new Schema({
   title: {
     type: String,
-    required: true
+    required: true,
   },
   price: {
     type: Number,
     required: true,
-    min: 0
+    min: 0,
   },
-  description: String,
+  description: {
+    type: String,
+    required: true,
+  },
   image: {
+    url: String,
     filename: String,
-    url: {
-      type: String,
-      default: "https://as1.ftcdn.net/v2/jpg/02/43/25/90/1000_F_243259090_crbVsAqKF3PC2jk2eKiUwZHBPH8Q6y9Y.jpg",
-      set: v =>
-        v === ""
-          ? "https://as1.ftcdn.net/v2/jpg/02/43/25/90/1000_F_243259090_crbVsAqKF3PC2jk2eKiUwZHBPH8Q6y9Y.jpg"
-          : v
-    }
   },
- 
-  location: String,
-  country: String
+  location: {
+    type: String,
+    default: "Unknown Location", // Optional: Add default value for location
+  },
+  country: {
+    type: String,
+    default: "Unknown Country", // Optional: Add default value for country
+  },
+  reviews: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "Review",
+    },
+  ],
+  owner: {
+    type: Schema.Types.ObjectId,
+    ref: "User",
+  },
+  coordinates: {
+    type: [Number],
+    required: true,
+  },
+});
+
+listingSchema.post("findOneAndDelete", async (listing) => {
+  if (listing) {
+    await Review.deleteMany({ _id: { $in: listing.reviews } }); // Fix: Use _id to delete related reviews
+  }
 });
 
 const Listing = mongoose.model("Listing", listingSchema);
